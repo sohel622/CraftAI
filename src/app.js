@@ -2,6 +2,7 @@
 import express from 'express';
 import cors from 'cors';
 import { config } from './config/env.js';
+import { homeRouter } from './routes/home.js';
 import { metaRouter } from './routes/meta.js';
 import { projectsRouter } from './routes/projects.js';
 import { generateRouter } from './routes/generate.js';
@@ -17,6 +18,7 @@ export function createApp() {
   // Projects can be large (many files) - allow up to 10 MB JSON.
   app.use(express.json({ limit: '10mb' }));
 
+  app.use('/', homeRouter);
   app.use('/api', metaRouter);
   app.use('/api/generate', generateRouter);
   // github router first so its routes are not handled twice by projectsRouter
@@ -27,3 +29,6 @@ export function createApp() {
   app.use(errorHandler);
   return app;
 }
+
+// Vercel looks for a default-exported app in src/app.js (zero-config Express).
+export default createApp();

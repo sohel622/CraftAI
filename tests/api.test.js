@@ -109,3 +109,14 @@ test('HTTP: health, stacks, validation, stateless generate', async () => {
     server.close();
   }
 });
+
+test('HTTP: home status page', async () => {
+  const server = createApp().listen(0);
+  try {
+    const res = await fetch(`http://127.0.0.1:${server.address().port}/`);
+    const html = await res.text();
+    assert.equal(res.status, 200);
+    assert.ok(html.includes('Backend is running'));
+    assert.ok(!html.includes('test-key'));
+  } finally { server.close(); }
+});
